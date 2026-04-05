@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { toleranceTier } from '../lib/toleranceAlgo.js'
 import { ALL_METHODS, GOLD, GOLD_SEL } from '../icons.jsx'
+import SessionTimer from './SessionTimer.jsx'
 
-const METHOD_LABEL = { flower:'flower','pre-roll':'pre-roll',dab:'dab',concentrate:'concentrate',vape:'vape',edible:'edible',capsule:'capsule' }
-const FEEL_LABEL   = { 1:'barely', 2:'mildly', 3:'solidly', 4:'very', 5:'extremely' }
+const FEEL_LABEL = { 1:'barely', 2:'mildly', 3:'solidly', 4:'very', 5:'extremely' }
 
 const fmt = iso => new Date(iso).toLocaleDateString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })
 
 export default function Tracker({
   toleranceScore, sessions, streak, activeTBreak,
   tBreakDays, tBreakHours,
+  timer,
   onStartTBreak, onEndTBreak, onDeleteSession, onOpenLog,
   method, setMethod,
 }) {
@@ -311,6 +312,9 @@ export default function Tracker({
         ))}
       </div>
       <button className="log-btn" onClick={onOpenLog}>+ log a session</button>
+
+      {/* Session timer */}
+      {timer && <SessionTimer timer={timer} />}
     </>
   )
 }

@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useAuth }    from './hooks/useAuth.js'
 import { useAppData } from './hooks/useAppData.js'
+import { useTimer }   from './hooks/useTimer.js'
 import Auth      from './components/Auth.jsx'
 import Feed      from './components/Feed.jsx'
 import Tracker   from './components/Tracker.jsx'
@@ -246,10 +247,18 @@ const navIconColor = (key, tab) => tab === key ? '#5e2d99' : '#3a2c1e'
 export default function Threshold() {
   const { user, profile, loading: authLoading, signUp, signIn, signOut, updateProfile } = useAuth()
   const appData = useAppData(user, profile)
-  const [tab,      setTab]      = useState('feed')
-  const [method,   setMethod]   = useState('flower')
-  const [showLog,  setShowLog]  = useState(false)
+  const timer   = useTimer()
+  const [tab,         setTab]         = useState('feed')
+  const [method,      setMethod]      = useState('flower')
+  const [showLog,     setShowLog]     = useState(false)
   const [showSignOut, setShowSignOut] = useState(false)
+
+  // Log a session then auto-start the count-up timer
+  const handleLogSession = useCallback(async (sessionData) => {
+    await appData.logSession(sessionData)
+    // Start timer in count-up mode so they can track time since last session
+    timer.start('up')
+  }, [appData, timer])
 
   if (authLoading) {
     return (
@@ -348,6 +357,7 @@ export default function Threshold() {
               onOpenLog={() => setShowLog(true)}
               method={method}
               setMethod={setMethod}
+              timer={timer}
             />
           )}
 
@@ -357,6 +367,7 @@ export default function Threshold() {
               activeTBreak={appData.activeTBreak}
               profile={profile}
               onUpdateProfile={updateProfile}
+              currentTolerance={appData.toleranceScore}
             />
           )}
 
@@ -383,7 +394,7 @@ export default function Threshold() {
         <LogModal
           initialMethod={method}
           onClose={() => setShowLog(false)}
-          onSave={appData.logSession}
+          onSave={handleLogSession}
         />
       )}
     </>
