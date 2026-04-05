@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { useAuth }    from './hooks/useAuth.js'
 import { useAppData } from './hooks/useAppData.js'
 import { useTimer }   from './hooks/useTimer.js'
+import { supabaseConfigured } from './lib/supabase.js'
 import Auth      from './components/Auth.jsx'
 import Feed      from './components/Feed.jsx'
 import Tracker   from './components/Tracker.jsx'
@@ -259,6 +260,36 @@ export default function Threshold() {
     // Start timer in count-up mode so they can track time since last session
     timer.start('up')
   }, [appData, timer])
+
+  if (!supabaseConfigured) {
+    return (
+      <>
+        <style>{css}</style>
+        <div className="paper-bg" /><div className="vignette" />
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--parch)', padding: 28 }}>
+          <div className="logo" style={{ fontSize: 36, marginBottom: 12 }}>thresh<em>old</em></div>
+          <p style={{ color: 'var(--ink4)', fontSize: 13, fontWeight: 700, textAlign: 'center', lineHeight: 1.7, marginBottom: 24 }}>
+            This app needs a Supabase project to work.<br />
+            Add your credentials to get started.
+          </p>
+          <div style={{ width: '100%', maxWidth: 360, background: 'var(--parch2)', border: '1.5px solid var(--border2)', borderRadius: 20, padding: '20px 20px', boxShadow: 'var(--shadow2)', fontFamily: "'Mulish', sans-serif" }}>
+            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--ink4)', marginBottom: 10 }}>setup steps</div>
+            {[
+              ['1', 'Create a free project at supabase.com'],
+              ['2', 'Run supabase/schema.sql in the SQL Editor'],
+              ['3', 'Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON as GitHub repository secrets (Settings → Secrets → Actions)'],
+              ['4', 'Re-run the GitHub Actions deploy workflow'],
+            ].map(([n, t]) => (
+              <div key={n} style={{ display: 'flex', gap: 12, marginBottom: 10, alignItems: 'flex-start' }}>
+                <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--violet-bg)', border: '1.5px solid rgba(94,45,153,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800, color: 'var(--violet)', flexShrink: 0 }}>{n}</div>
+                <p style={{ fontSize: 12, color: 'var(--ink3)', fontWeight: 700, lineHeight: 1.6, margin: 0 }}>{t}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </>
+    )
+  }
 
   if (authLoading) {
     return (
