@@ -183,6 +183,14 @@ export const SizeColumnIll = ({ h, color }) => (
   </svg>
 )
 
+export const MapIllustration = ({ size = 28, color = '#1a2e1a' }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke={color} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 4C11.6 4 8 7.6 8 12C8 18 16 28 16 28C16 28 24 18 24 12C24 7.6 20.4 4 16 4Z" strokeWidth="1.2" />
+    <circle cx="16" cy="12" r="3.5" strokeWidth="1.1" />
+    <path d="M5 22C5 22 9 20 16 20C23 20 27 22 27 22" strokeWidth="0.9" strokeDasharray="1.2 1" />
+  </svg>
+)
+
 export const ALL_METHODS = [
   { key: 'flower',      Ill: FlowerMethodIcon },
   { key: 'pre-roll',    Ill: PreRollMethodIcon },
