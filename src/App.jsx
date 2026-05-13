@@ -8,11 +8,12 @@ import Feed      from './components/Feed.jsx'
 import Tracker   from './components/Tracker.jsx'
 import Schedule  from './components/Schedule.jsx'
 import Savings   from './components/Savings.jsx'
+import Map       from './components/Map.jsx'
 import LogModal  from './components/LogModal.jsx'
 import {
   LeafIllustration, TrackerIllustration,
   ScheduleIllustration, SavingsIllustration,
-  BellIllustration,
+  MapIllustration, BellIllustration,
 } from './icons.jsx'
 
 const css = `
@@ -68,7 +69,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'Mulish', sans-
 .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--emerald-l), var(--violet-l)); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 14px; color: var(--parch); font-weight: 700; box-shadow: var(--shadow); cursor: pointer; }
 
 .tabs { display: flex; padding: 14px 20px 0; border-bottom: 1.5px solid var(--border2); }
-.tab { flex: 1; padding: 8px 2px 12px; background: none; border: none; border-bottom: 2.5px solid transparent; margin-bottom: -1.5px; color: var(--gold-bright); font-family: 'Mulish', sans-serif; font-size: 9px; font-weight: 800; cursor: pointer; transition: all 0.22s; letter-spacing: 0.06em; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.tab { flex: 1; padding: 8px 2px 12px; background: none; border: none; border-bottom: 2.5px solid transparent; margin-bottom: -1.5px; color: var(--gold-bright); font-family: 'Mulish', sans-serif; font-size: 8px; font-weight: 800; cursor: pointer; transition: all 0.22s; letter-spacing: 0.06em; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 5px; }
 .tab.active { color: var(--violet-l); border-bottom-color: var(--violet-l); }
 
 .content { flex: 1; padding: 18px 20px; }
@@ -201,6 +202,17 @@ body { background: var(--parch); color: var(--ink); font-family: 'Mulish', sans-
 .sav-tile { flex: 1; background: rgba(245,234,216,0.75); border-radius: 14px; padding: 12px; border: 1px solid rgba(122,77,0,0.2); }
 .sav-tile-lbl { font-size: 9px; color: var(--ink4); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px; }
 .sav-tile-val { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--gold); }
+
+/* MAP */
+.map-section { display: flex; flex-direction: column; gap: 14px; }
+.map-container { border-radius: 22px; overflow: hidden; height: 340px; border: 1.5px solid var(--border2); box-shadow: var(--shadow2); }
+.disp-card { background: var(--parch2); border: 1.5px solid var(--border2); border-radius: 18px; padding: 14px 16px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.18s; }
+.disp-card:hover { border-color: rgba(94,45,153,0.3); background: linear-gradient(145deg, var(--parch2), rgba(232,216,248,0.5)); }
+.disp-open { font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 8px; flex-shrink: 0; margin-left: 10px; }
+.disp-open.yes { background: rgba(10,74,56,0.12); color: var(--emerald); }
+.disp-open.no  { background: rgba(122,77,0,0.12); color: var(--gold); }
+.weedmaps-btn { display: block; text-align: center; padding: 11px; background: var(--emerald-l); color: var(--parch); border-radius: 14px; font-weight: 800; font-size: 13px; text-decoration: none; font-family: 'Mulish', sans-serif; }
+.weedmaps-btn:hover { background: var(--emerald); }
 
 /* BOTTOM NAV */
 .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 430px; max-width: 100%; background: rgba(245,234,216,0.97); backdrop-filter: blur(20px); border-top: 1.5px solid var(--border2); display: flex; z-index: 100; padding: 10px 0 18px; box-shadow: 0 -4px 24px rgba(58,22,96,0.1); }
@@ -354,7 +366,7 @@ export default function Threshold() {
         </div>
 
         <div className="tabs">
-          {[['feed', LeafIllustration], ['tracker', TrackerIllustration], ['schedule', ScheduleIllustration], ['savings', SavingsIllustration]].map(([key, Ill]) => (
+          {[['feed', LeafIllustration], ['tracker', TrackerIllustration], ['schedule', ScheduleIllustration], ['savings', SavingsIllustration], ['map', MapIllustration]].map(([key, Ill]) => (
             <button key={key} className={`tab ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>
               <Ill size={22} color={navIconColor(key, tab)} />
               {key}
@@ -409,10 +421,12 @@ export default function Threshold() {
               onUpdateProfile={updateProfile}
             />
           )}
+
+          {tab === 'map' && <Map />}
         </div>
 
         <div className="bottom-nav">
-          {[['feed', LeafIllustration], ['tracker', TrackerIllustration], ['schedule', ScheduleIllustration], ['savings', SavingsIllustration]].map(([key, NavIll]) => (
+          {[['feed', LeafIllustration], ['tracker', TrackerIllustration], ['schedule', ScheduleIllustration], ['savings', SavingsIllustration], ['map', MapIllustration]].map(([key, NavIll]) => (
             <button key={key} className={`nbtn ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>
               <NavIll size={24} color={navIconColor(key, tab)} />
               <span className="nbtn-lbl">{key}</span>

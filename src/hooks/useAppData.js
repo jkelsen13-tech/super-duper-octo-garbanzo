@@ -174,8 +174,14 @@ export function useAppData(user, profile) {
   }, [uid, likedPosts])
 
   // ── Create a post ─────────────────────────────────────────────
+  const BANNED_DRUGS = /\b(heroin|fentanyl|oxycodone|percocet|vicodin|hydrocodone|morphine|codeine|opium|cocaine|methamphetamine|adderall|ritalin|psilocybin|peyote|ayahuasca|ketamine|mdma|ecstasy|xanax|klonopin|valium|nitrous)\b/i
+
   const createPost = useCallback(async (content, sessionId = null) => {
     if (!uid) return
+    if (BANNED_DRUGS.test(content)) {
+      showToast("Posts about other substances aren't allowed here 🌿", 'error')
+      return
+    }
     const { error } = await supabase
       .from('posts')
       .insert({ user_id: uid, content, session_id: sessionId || null })
