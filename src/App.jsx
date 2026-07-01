@@ -95,6 +95,9 @@ body { background: var(--parch); color: var(--ink); font-family: 'Mulish', sans-
 .tol-badge.md { background: rgba(10,74,56,0.12); color: var(--emerald); border: 1.5px solid rgba(10,74,56,0.25); }
 .tol-badge.lo { background: rgba(58,22,96,0.1); color: var(--violet); border: 1.5px solid rgba(58,22,96,0.2); }
 .post-caption { padding: 0 16px 12px; font-size: 13px; color: var(--ink3); line-height: 1.68; font-weight: 600; }
+.post-media { width: 100%; background: var(--parch3); }
+.post-media img, .post-media video { width: 100%; display: block; max-height: 420px; object-fit: cover; }
+.compose-media-preview { width: 100%; display: block; border-radius: 14px; max-height: 260px; object-fit: cover; border: 1.5px solid var(--border2); }
 .post-actions { padding: 10px 16px 14px; display: flex; gap: 4px; border-top: 1.5px solid var(--border2); align-items: center; }
 .pact { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--ink3); background: none; border: none; cursor: pointer; font-family: 'Mulish', sans-serif; padding: 6px 8px; border-radius: 8px; transition: all 0.18s; }
 .pact:hover { background: var(--violet-bg); color: var(--violet); }
