@@ -43,8 +43,10 @@ const css = `
   --ink5:       #7a6a58;
   --border:     rgba(14,10,6,0.15);
   --border2:    rgba(14,10,6,0.25);
-  --shadow:     0 2px 16px rgba(58,22,96,0.12);
-  --shadow2:    0 4px 32px rgba(58,22,96,0.2);
+  --glass-hi:   rgba(255,255,255,0.55);
+  --glass-hi2:  rgba(255,255,255,0.8);
+  --shadow:     0 2px 16px rgba(58,22,96,0.12), inset 0 1px 0 var(--glass-hi);
+  --shadow2:    0 4px 32px rgba(58,22,96,0.2), inset 0 1px 0 var(--glass-hi);
 }
 
 body { background: var(--parch); color: var(--ink); font-family: 'Mulish', sans-serif; min-height: 100vh; overflow-x: hidden; }
@@ -58,19 +60,43 @@ body { background: var(--parch); color: var(--ink); font-family: 'Mulish', sans-
 }
 .vignette { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(14,10,6,0.06) 100%); }
 
-.app { position: relative; z-index: 1; max-width: 430px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 88px; }
+.app { position: relative; z-index: 1; max-width: 430px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 110px; }
 
 .header { padding: 22px 20px 0; display: flex; justify-content: space-between; align-items: center; }
 .logo { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 27px; letter-spacing: -0.3px; background: linear-gradient(135deg, var(--emerald-l), var(--violet-l), var(--gold-bright)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .logo em { font-style: italic; font-weight: 400; }
 .header-right { display: flex; align-items: center; gap: 10px; }
-.notif-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--parch2); border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); position: relative; }
+.notif-btn { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(150deg, rgba(255,255,255,0.55), rgba(237,224,200,0.4)); backdrop-filter: blur(12px) saturate(1.5); -webkit-backdrop-filter: blur(12px) saturate(1.5); border: 1px solid var(--glass-hi); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 12px rgba(58,22,96,0.14), inset 0 1px 0 var(--glass-hi2); position: relative; }
 .notif-dot { position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%; background: var(--violet-l); border: 1.5px solid var(--parch); }
-.avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--emerald-l), var(--violet-l)); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 14px; color: var(--parch); font-weight: 700; box-shadow: var(--shadow); cursor: pointer; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--emerald-l), var(--violet-l)); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 14px; color: var(--parch); font-weight: 700; box-shadow: 0 2px 12px rgba(58,22,96,0.2), inset 0 1px 0 rgba(255,255,255,0.45); border: 1px solid var(--glass-hi); cursor: pointer; }
 
 .tabs { display: flex; padding: 14px 20px 0; border-bottom: 1.5px solid var(--border2); }
-.tab { flex: 1; padding: 8px 2px 12px; background: none; border: none; border-bottom: 2.5px solid transparent; margin-bottom: -1.5px; color: var(--gold-bright); font-family: 'Mulish', sans-serif; font-size: 8px; font-weight: 800; cursor: pointer; transition: all 0.22s; letter-spacing: 0.06em; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.tab { flex: 1; padding: 6px 2px 10px; background: none; border: none; border-bottom: 2.5px solid transparent; margin-bottom: -1.5px; color: var(--gold-bright); font-family: 'Mulish', sans-serif; font-size: 8px; font-weight: 800; cursor: pointer; transition: all 0.22s; letter-spacing: 0.06em; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .tab.active { color: var(--violet-l); border-bottom-color: var(--violet-l); }
+
+/* ── Liquid-glass icon bubble + tap effects (shared by tabs & bottom nav) ── */
+.nav-ico { position: relative; width: 44px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: background 0.25s, box-shadow 0.25s, transform 0.2s; }
+.tab.active .nav-ico, .nbtn.active .nav-ico {
+  background: linear-gradient(150deg, rgba(255,255,255,0.72), rgba(255,255,255,0.16) 55%, rgba(232,216,248,0.35));
+  box-shadow: inset 0 0 0 1px var(--glass-hi), inset 0 1.5px 0 var(--glass-hi2), inset 0 -6px 12px rgba(94,45,153,0.08), 0 3px 12px rgba(58,22,96,0.18);
+}
+.nav-ico::after { content: ''; position: absolute; top: 2px; left: 8px; right: 8px; height: 10px; border-radius: 10px; background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0)); opacity: 0; transition: opacity 0.25s; pointer-events: none; }
+.tab.active .nav-ico::after, .nbtn.active .nav-ico::after { opacity: 1; }
+.nav-ico.pop { animation: iconShake 0.5s cubic-bezier(0.36,0.07,0.19,0.97); }
+@keyframes iconShake {
+  0%   { transform: rotate(0deg)   scale(1); }
+  15%  { transform: rotate(-13deg) scale(1.2); }
+  35%  { transform: rotate(11deg)  scale(1.12); }
+  55%  { transform: rotate(-7deg)  scale(1.06); }
+  75%  { transform: rotate(4deg)   scale(1.02); }
+  100% { transform: rotate(0deg)   scale(1); }
+}
+.spark { position: absolute; left: 50%; top: 50%; width: 5px; height: 5px; border-radius: 50%; pointer-events: none; box-shadow: 0 0 6px currentColor; animation: sparkFly 0.6s ease-out forwards; }
+@keyframes sparkFly {
+  0%   { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }
+  12%  { transform: translate(-50%, -50%) scale(1.25); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.15); opacity: 0; }
+}
 
 .content { flex: 1; padding: 18px 20px; }
 .s-label { font-size: 10px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink3); margin-bottom: 12px; font-family: 'Playfair Display', serif; font-style: italic; }
@@ -160,7 +186,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'Mulish', sans-
 .mchip { flex-shrink: 0; background: var(--parch2); border: 1.5px solid var(--border2); border-radius: 20px; padding: 8px 14px; font-size: 12px; font-weight: 700; color: var(--gold-bright); cursor: pointer; font-family: 'Mulish', sans-serif; display: flex; align-items: center; gap: 8px; box-shadow: 0 1px 4px rgba(58,22,96,0.08); transition: all 0.18s; }
 .mchip.sel { background: linear-gradient(135deg, var(--violet-bg), var(--emerald-bg)); border-color: rgba(58,22,96,0.4); color: var(--violet-l); }
 
-.log-btn { width: 100%; padding: 17px; background: linear-gradient(135deg, var(--emerald-l), var(--violet-l)); border: none; border-radius: 18px; color: var(--gold-bright); font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-bottom: 14px; box-shadow: 0 4px 20px rgba(58,22,96,0.3); font-style: italic; }
+.log-btn { width: 100%; padding: 17px; background: linear-gradient(135deg, var(--emerald-l), var(--violet-l)); border: 1px solid rgba(255,255,255,0.28); border-radius: 18px; color: var(--gold-bright); font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-bottom: 14px; box-shadow: 0 4px 20px rgba(58,22,96,0.3), inset 0 1.5px 0 rgba(255,255,255,0.35); font-style: italic; }
 .log-btn:hover { transform: translateY(-2px); }
 .log-btn:disabled { opacity: 0.6; transform: none; cursor: default; }
 
@@ -214,19 +240,24 @@ body { background: var(--parch); color: var(--ink); font-family: 'Mulish', sans-
 .disp-open { font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 8px; flex-shrink: 0; margin-left: 10px; }
 .disp-open.yes { background: rgba(10,74,56,0.12); color: var(--emerald); }
 .disp-open.no  { background: rgba(122,77,0,0.12); color: var(--gold); }
-.weedmaps-btn { display: block; text-align: center; padding: 11px; background: var(--emerald-l); color: var(--parch); border-radius: 14px; font-weight: 800; font-size: 13px; text-decoration: none; font-family: 'Mulish', sans-serif; }
+.weedmaps-btn { display: block; text-align: center; padding: 11px; background: var(--emerald-l); color: var(--parch); border: 1px solid rgba(255,255,255,0.28); border-radius: 14px; font-weight: 800; font-size: 13px; text-decoration: none; font-family: 'Mulish', sans-serif; box-shadow: 0 3px 14px rgba(10,74,56,0.25), inset 0 1.5px 0 rgba(255,255,255,0.3); }
 .weedmaps-btn:hover { background: var(--emerald); }
 
-/* BOTTOM NAV */
-.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 430px; max-width: 100%; background: rgba(245,234,216,0.97); backdrop-filter: blur(20px); border-top: 1.5px solid var(--border2); display: flex; z-index: 100; padding: 10px 0 18px; box-shadow: 0 -4px 24px rgba(58,22,96,0.1); }
-.nbtn { flex: 1; padding: 4px 6px; display: flex; flex-direction: column; align-items: center; gap: 5px; background: none; border: none; cursor: pointer; transition: all 0.18s; }
-.nbtn-lbl { font-size: 9px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold-bright); font-family: 'Mulish', sans-serif; transition: color 0.18s; }
-.nbtn.active .nbtn-lbl { color: var(--violet-l); }
-.nbtn.active::after { content: ''; display: block; width: 4px; height: 4px; border-radius: 50%; background: var(--violet-l); margin: 0 auto; }
+/* BOTTOM NAV — floating liquid-glass pill */
+.bottom-nav { position: fixed; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); width: calc(100% - 28px); max-width: 402px; display: flex; z-index: 100; padding: 8px 6px; border-radius: 28px;
+  background: linear-gradient(150deg, rgba(250,242,228,0.62), rgba(240,228,205,0.4));
+  backdrop-filter: blur(22px) saturate(1.7); -webkit-backdrop-filter: blur(22px) saturate(1.7);
+  border: 1px solid var(--glass-hi);
+  box-shadow: 0 12px 36px rgba(58,22,96,0.24), inset 0 1.5px 0 var(--glass-hi2), inset 0 -1px 0 rgba(122,77,0,0.1); }
+.bottom-nav::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(115deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 28%, rgba(255,255,255,0) 72%, rgba(255,255,255,0.22) 100%); }
+.nbtn { flex: 1; padding: 4px 2px; display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; cursor: pointer; transition: all 0.18s; position: relative; }
+.nbtn-lbl { font-size: 8px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold-bright); font-family: 'Mulish', sans-serif; transition: color 0.18s; }
+.nbtn.active .nbtn-lbl, .tab.active .nbtn-lbl { color: var(--violet-l); }
 
 /* MODAL / SHEET */
 .overlay { position: fixed; inset: 0; background: rgba(14,10,6,0.65); backdrop-filter: blur(6px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; }
-.sheet { background: var(--parch); border: 1.5px solid var(--border2); border-radius: 28px 28px 0 0; padding: 12px 22px 36px; width: 100%; max-width: 430px; position: relative; animation: sheetUp 0.32s cubic-bezier(0.34,1.4,0.64,1); overflow-y: auto; max-height: 92vh; }
+.sheet { background: rgba(245,234,216,0.92); backdrop-filter: blur(20px) saturate(1.5); -webkit-backdrop-filter: blur(20px) saturate(1.5); border: 1px solid var(--glass-hi); border-bottom: none; border-radius: 28px 28px 0 0; padding: 12px 22px 36px; width: 100%; max-width: 430px; position: relative; animation: sheetUp 0.32s cubic-bezier(0.34,1.4,0.64,1); overflow-y: auto; max-height: 92vh; box-shadow: inset 0 1.5px 0 var(--glass-hi2), 0 -8px 40px rgba(58,22,96,0.25); }
 @keyframes sheetUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .sheet-handle { width: 40px; height: 4px; background: var(--parch3); border-radius: 2px; margin: 0 auto 20px; }
 .sheet-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
@@ -252,13 +283,53 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px;
 .input-divider { height: 1px; background: var(--border2); margin: 4px 0 20px; }
 
 /* TOAST */
-.toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; padding: 12px 22px; border-radius: 40px; font-family: 'Mulish', sans-serif; font-size: 13px; font-weight: 800; box-shadow: 0 4px 24px rgba(58,22,96,0.25); animation: toastIn 0.3s cubic-bezier(0.34,1.4,0.64,1); white-space: nowrap; }
-.toast.success { background: linear-gradient(135deg, var(--emerald-l), var(--violet-l)); color: var(--parch); }
-.toast.error   { background: #c0392b; color: #fff; }
+.toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; padding: 12px 22px; border-radius: 40px; font-family: 'Mulish', sans-serif; font-size: 13px; font-weight: 800; border: 1px solid rgba(255,255,255,0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 24px rgba(58,22,96,0.25), inset 0 1px 0 rgba(255,255,255,0.4); animation: toastIn 0.3s cubic-bezier(0.34,1.4,0.64,1); white-space: nowrap; }
+.toast.success { background: linear-gradient(135deg, rgba(22,117,92,0.88), rgba(94,45,153,0.88)); color: var(--parch); }
+.toast.error   { background: rgba(192,57,43,0.9); color: #fff; }
 @keyframes toastIn { from { transform: translateX(-50%) translateY(-16px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
 `
 
 const navIconColor = (key, tab) => tab === key ? '#5e2d99' : '#3a2c1e'
+
+const SPARK_COLORS = ['#16755c', '#5e2d99', '#e8b820', '#b07218', '#0a4a38', '#d4a017']
+
+// Nav button with liquid-glass bubble + tap shake & spark burst.
+// Remounting the icon wrapper via key restarts the CSS animations on every tap.
+function NavButton({ name, Ill, tab, setTab, variant, iconSize }) {
+  const [burst, setBurst] = useState(0)
+  const active = tab === name
+
+  const sparks = burst > 0 && Array.from({ length: 7 }, (_, i) => {
+    const angle = (i / 7) * Math.PI * 2 + (burst % 3) * 0.4
+    const dist  = 17 + ((i * 7 + burst * 5) % 12)
+    return (
+      <span
+        key={i}
+        className="spark"
+        style={{
+          '--dx': `${Math.cos(angle) * dist}px`,
+          '--dy': `${Math.sin(angle) * dist}px`,
+          background: SPARK_COLORS[i % SPARK_COLORS.length],
+          color: SPARK_COLORS[i % SPARK_COLORS.length],
+          animationDelay: `${(i % 3) * 0.03}s`,
+        }}
+      />
+    )
+  })
+
+  return (
+    <button
+      className={`${variant} ${active ? 'active' : ''}`}
+      onClick={() => { setTab(name); setBurst(b => b + 1) }}
+    >
+      <span key={burst} className={`nav-ico ${burst > 0 ? 'pop' : ''}`}>
+        <Ill size={iconSize} color={navIconColor(name, tab)} />
+        {sparks}
+      </span>
+      <span className="nbtn-lbl">{name}</span>
+    </button>
+  )
+}
 
 export default function Threshold() {
   const { user, profile, loading: authLoading, signUp, signIn, signOut, updateProfile } = useAuth()
@@ -370,10 +441,7 @@ export default function Threshold() {
 
         <div className="tabs">
           {[['feed', LeafIllustration], ['tracker', TrackerIllustration], ['schedule', ScheduleIllustration], ['savings', SavingsIllustration], ['map', MapIllustration]].map(([key, Ill]) => (
-            <button key={key} className={`tab ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>
-              <Ill size={22} color={navIconColor(key, tab)} />
-              {key}
-            </button>
+            <NavButton key={key} name={key} Ill={Ill} tab={tab} setTab={setTab} variant="tab" iconSize={22} />
           ))}
         </div>
 
@@ -430,10 +498,7 @@ export default function Threshold() {
 
         <div className="bottom-nav">
           {[['feed', LeafIllustration], ['tracker', TrackerIllustration], ['schedule', ScheduleIllustration], ['savings', SavingsIllustration], ['map', MapIllustration]].map(([key, NavIll]) => (
-            <button key={key} className={`nbtn ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>
-              <NavIll size={24} color={navIconColor(key, tab)} />
-              <span className="nbtn-lbl">{key}</span>
-            </button>
+            <NavButton key={key} name={key} Ill={NavIll} tab={tab} setTab={setTab} variant="nbtn" iconSize={24} />
           ))}
         </div>
       </div>
