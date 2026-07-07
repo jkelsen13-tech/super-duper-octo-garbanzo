@@ -22,8 +22,10 @@ create table if not exists public.profiles (
 
 -- Public read, owner write
 alter table public.profiles enable row level security;
+drop policy if exists "Public profiles are viewable by everyone" on public.profiles;
 create policy "Public profiles are viewable by everyone"
   on public.profiles for select using (true);
+drop policy if exists "Users can update their own profile" on public.profiles;
 create policy "Users can update their own profile"
   on public.profiles for update using (auth.uid() = id);
 
@@ -59,13 +61,16 @@ create table if not exists public.sessions (
   logged_at     timestamptz not null default now()
 );
 
-create index on public.sessions (user_id, logged_at desc);
+create index if not exists sessions_user_logged_idx on public.sessions (user_id, logged_at desc);
 
 alter table public.sessions enable row level security;
+drop policy if exists "Users can view their own sessions" on public.sessions;
 create policy "Users can view their own sessions"
   on public.sessions for select using (auth.uid() = user_id);
+drop policy if exists "Users can insert their own sessions" on public.sessions;
 create policy "Users can insert their own sessions"
   on public.sessions for insert with check (auth.uid() = user_id);
+drop policy if exists "Users can delete their own sessions" on public.sessions;
 create policy "Users can delete their own sessions"
   on public.sessions for delete using (auth.uid() = user_id);
 
@@ -80,9 +85,10 @@ create table if not exists public.tbreaks (
   goal_days  integer not null default 7
 );
 
-create index on public.tbreaks (user_id, started_at desc);
+create index if not exists tbreaks_user_started_idx on public.tbreaks (user_id, started_at desc);
 
 alter table public.tbreaks enable row level security;
+drop policy if exists "Users manage their own t-breaks" on public.tbreaks;
 create policy "Users manage their own t-breaks"
   on public.tbreaks for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
@@ -104,13 +110,16 @@ create table if not exists public.posts (
 alter table public.posts add column if not exists media_url text;
 alter table public.posts add column if not exists media_type text;
 
-create index on public.posts (created_at desc);
+create index if not exists posts_created_idx on public.posts (created_at desc);
 
 alter table public.posts enable row level security;
+drop policy if exists "Posts are publicly viewable" on public.posts;
 create policy "Posts are publicly viewable"
   on public.posts for select using (true);
+drop policy if exists "Users can create posts" on public.posts;
 create policy "Users can create posts"
   on public.posts for insert with check (auth.uid() = user_id);
+drop policy if exists "Users can delete their own posts" on public.posts;
 create policy "Users can delete their own posts"
   on public.posts for delete using (auth.uid() = user_id);
 
@@ -123,8 +132,10 @@ create table if not exists public.post_likes (
 );
 
 alter table public.post_likes enable row level security;
+drop policy if exists "Likes are publicly viewable" on public.post_likes;
 create policy "Likes are publicly viewable"
   on public.post_likes for select using (true);
+drop policy if exists "Users can like/unlike" on public.post_likes;
 create policy "Users can like/unlike"
   on public.post_likes for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
@@ -138,13 +149,16 @@ create table if not exists public.post_comments (
   created_at timestamptz not null default now()
 );
 
-create index on public.post_comments (post_id, created_at asc);
+create index if not exists post_comments_post_created_idx on public.post_comments (post_id, created_at asc);
 
 alter table public.post_comments enable row level security;
+drop policy if exists "Comments are publicly viewable" on public.post_comments;
 create policy "Comments are publicly viewable"
   on public.post_comments for select using (true);
+drop policy if exists "Users can write comments" on public.post_comments;
 create policy "Users can write comments"
   on public.post_comments for insert with check (auth.uid() = user_id);
+drop policy if exists "Users can delete their own comments" on public.post_comments;
 create policy "Users can delete their own comments"
   on public.post_comments for delete using (auth.uid() = user_id);
 
@@ -158,8 +172,10 @@ create table if not exists public.follows (
 );
 
 alter table public.follows enable row level security;
+drop policy if exists "Follows are publicly viewable" on public.follows;
 create policy "Follows are publicly viewable"
   on public.follows for select using (true);
+drop policy if exists "Users manage their own follows" on public.follows;
 create policy "Users manage their own follows"
   on public.follows for all using (auth.uid() = follower_id) with check (auth.uid() = follower_id);
 
@@ -177,6 +193,7 @@ create table if not exists public.push_subscriptions (
 );
 
 alter table public.push_subscriptions enable row level security;
+drop policy if exists "Users manage their own push subscriptions" on public.push_subscriptions;
 create policy "Users manage their own push subscriptions"
   on public.push_subscriptions for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
